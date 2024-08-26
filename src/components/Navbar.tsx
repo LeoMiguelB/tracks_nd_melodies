@@ -28,6 +28,9 @@ const Navbar = () => {
             <Link onClick={() => setIsMenuOpen(false)} href="/signup" className="block py-2 hover:text-gray-300">Signup</Link>
           </li>
           <li>
+            <Link onClick={() => setIsMenuOpen(false)} href="/contact" className="block py-2 hover:text-gray-300">Contact</Link>
+          </li>
+          <li>
             <Link onClick={() => setIsMenuOpen(false)} href="/about" className="block py-2 hover:text-gray-300">About</Link>
           </li>
         </ul>

@@ -14,7 +14,6 @@ export default function({ songs }: any) {
       id: item.id + i + 1 // Incrementing ID for each copy
     }))
   );
-  console.log(duplicates)
 
   return (
     <MusicProvider>

@@ -5,7 +5,9 @@ import { supabase } from '../supabase';
 
 const schema = z.object({
   email: z.string().email().min(1, "email cannot be empty"),
-  name: z.string().min(1, "name cannot be empty.")
+  name: z.string().min(1, "name cannot be empty."),
+  title: z.string().min(1, "name cannot be empty."),
+  description: z.string().min(1, "name cannot be empty."),
 })
 
 export async function emailSignupAction(prevState: any, formData: FormData) {
@@ -13,20 +15,21 @@ export async function emailSignupAction(prevState: any, formData: FormData) {
   const validation = schema.safeParse({
     email: formData.get("email"),
     name: formData.get("name"),
+    title: formData.get('title'),
+    description: formData.get('description'),
   });
 
   const rawFormData = {
     email: formData.get('email'),
+    request_type: formData.get('request-type'),
     name: formData.get('name'),
-    beatstars_username: formData.get('beatstars'),
+    description: formData.get('description'),
+    title: formData.get('title'),
   }
 
-  // TODO: best to perform raw queries instead, more control over sanitization
   const { error } = await supabase
-  .from('email_list')
+  .from('issue_feature_requests')
   .insert(rawFormData)
-
-  console.log(error)
 
   if (validation.success) {
     // save the data, send an email, etc.

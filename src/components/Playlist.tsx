@@ -26,7 +26,7 @@ export default function Playlist({ songs }: PlaylistProps) {
         <tbody className="divide-y divide-gray-700">
           {songs && songs.map((song, index) => (
             <tr onClick={() => setCurrentSongIndex(index)} key={index} className="hover:bg-gray-800 transition-colors hover:cursor-pointer">
-              <td className="hidden sm:block py-6 px-4 font-medium">{index + 1 < 10 ? '0' + (index + 1) : index + 1}</td>
+              <td className="hidden sm:block pt-9 py-6 px-4 font-medium text-sm">{index + 1 < 10 ? '0' + (index + 1) : index + 1}</td>
               <td className="py-6 px-4 font-medium truncate">{song.title}</td>
               <td className="py-6 px-4 text-sm">{song.key}</td>
               <td className="py-6 px-4 text-sm text-gray-400 text-right">{song.bpm}</td>

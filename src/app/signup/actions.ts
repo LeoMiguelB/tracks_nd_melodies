@@ -26,8 +26,6 @@ export async function emailSignupAction(prevState: any, formData: FormData) {
   .from('email_list')
   .insert(rawFormData)
 
-  console.log(error)
-
   if (validation.success) {
     // save the data, send an email, etc.
     redirect("/");

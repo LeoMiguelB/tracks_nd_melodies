@@ -47,8 +47,6 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
   const [localVolume, setLocalVolume] = useState(0.0)
   
   const togglePlayPause = (): void => {
-
-    console.log("toggling")
     
     if (audioRef.current) {
       if (isPlaying) {

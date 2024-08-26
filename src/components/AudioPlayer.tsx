@@ -38,8 +38,6 @@ export default function AudioPlayer({
 
   const currentSong = songs ? songs[currentSongIndex] : null
 
-  console.log(currentSong)
-
   const durationDisplay = formatDurationDisplay(duration);
   const elapsedDisplay = formatDurationDisplay(currentProgress);
 

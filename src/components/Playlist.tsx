@@ -12,8 +12,6 @@ interface PlaylistProps {
 export default function Playlist({ songs }: PlaylistProps) {
   const { isPlaying, currentSongIndex, setCurrentSongIndex, togglePlayPause } = React.useContext(MusicContext)
 
-  console.log(currentSongIndex)
-
   return (
     <div className="w-full max-w-md mx-auto h-[450px] md:h-[500px] text-white overflow-x-auto">
       <table className="w-full sm:w-full border-collapse">

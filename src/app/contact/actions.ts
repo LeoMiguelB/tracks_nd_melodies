@@ -33,10 +33,13 @@ export async function emailSignupAction(prevState: any, formData: FormData) {
 
   if (validation.success) {
     // save the data, send an email, etc.
-    redirect("/");
+    return {
+      status: 'success'
+    }
   } else {
     return {
       errors: validation.error.issues,
+      status: 'error'
     };
   }
 }

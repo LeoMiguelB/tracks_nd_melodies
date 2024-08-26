@@ -20,7 +20,7 @@ export default function({ songs }: any) {
     <MusicProvider>
         {
         songs && (
-            <div className="">
+            <div className="lg:w-1/2 md:w-full w-full">
                 <Playlist songs={duplicates} />
                 <AudioPlayer songs={duplicates} songCount={duplicates ? duplicates.length : 0} />
             </div>

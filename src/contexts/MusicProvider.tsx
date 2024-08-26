@@ -42,6 +42,9 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
   const [currentSongIndex, setCurrentSongIndex] = React.useState(-1);
 
   const togglePlayPause = (): void => {
+
+    console.log("toggling")
+    
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();

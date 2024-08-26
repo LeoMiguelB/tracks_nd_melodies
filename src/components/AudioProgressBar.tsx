@@ -20,11 +20,11 @@ export default function AudioProgressBar(props: AudioProgressBarProps) {
   };
 
   return (
-    <div className="absolute h-1 -top-[4px] left-0 right-0 group">
+    <div className="h-6">
       <input
         type="range"
         name="progress"
-        className={`progress-bar absolute inset-0 w-full m-0 h-full appearance-none cursor-pointer bg-gray-700 accent-[background] group-hover:h-2 transition-all`}
+        className={`w-full m-0 cursor-pointer bg-gray-700 accent-[background]`}
         style={progressStyles}
         min={0}
         max={duration}

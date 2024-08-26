@@ -12,7 +12,7 @@ export default function Form() {
   const emailErrors = findErrors("email", state.errors);
 
   return (
-    <form action={formAction} className="w-full max-w-sm">
+    <form action={formAction} className="w-[80%] sm:w-full max-w-sm">
       <h1 className="font-bold py-8">Get Notified When There Is a New Upload.</h1>
       <div className="mb-4">
         <label htmlFor="email" className="block text-white text-sm font-bold mb-2">

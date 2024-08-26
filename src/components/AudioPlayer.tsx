@@ -65,7 +65,7 @@ export default function AudioPlayer({
 
 
   return (
-    <div className="bg-[foreground] text-slate-400 p-3 relative">
+    <div className="bg-[foreground] text-slate-400 p-4">
       {currentSong && (
         <audio
           // must include key in order re-render audio elem

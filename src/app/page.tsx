@@ -19,7 +19,7 @@ export default async function Home()  {
   const songs = error ? null : data
 
   return (
-    <main className="flex flex-col items-center justify-between pt-10">
+    <main className="flex flex-col items-center justify-between pt-10 w-full h-[660px] sm:h-[760px]">
       <TrackSections songs={songs} />
     </main>
   );

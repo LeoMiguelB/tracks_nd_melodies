@@ -4,7 +4,7 @@ import MusicProvider from "@/contexts/MusicProvider";
 import AudioPlayer from "./AudioPlayer";
 import Playlist from "./Playlist";
 
-export default function({ songs }: any) {
+export default function TrackSections({ songs }: any) {
 
   
   // for testing pagination

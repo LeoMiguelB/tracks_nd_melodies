@@ -30,6 +30,8 @@ interface MusicProviderProps {
   children: ReactElement;
 }
 
+
+
 export default function MusicProvider({ children }: MusicProviderProps): ReactElement {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -41,6 +43,9 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentSongIndex, setCurrentSongIndex] = React.useState(-1);
 
+  // saves volume state before mute
+  const [localVolume, setLocalVolume] = useState(0.0)
+  
   const togglePlayPause = (): void => {
 
     console.log("toggling")
@@ -54,10 +59,18 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
       setIsPlaying(!isPlaying);
     }
   };
+  
 
   const handleMuteUnmute = (): void => {
-    if (audioRef.current) {
-      audioRef.current.volume = audioRef.current.volume === 0 ? 0.2 : 0;
+    if (!audioRef.current) {
+      return
+    }
+
+    if (audioRef.current.volume === 0) {
+      audioRef.current.volume = localVolume
+    } else {
+      setLocalVolume(audioRef.current.volume)
+      audioRef.current.volume = 0
     }
   };
 

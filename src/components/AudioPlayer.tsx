@@ -108,7 +108,7 @@ export default function AudioPlayer({
           <p className="text-xs">{currentSong?.artist ?? 'No Artist'}</p>
         </div>
       </div>
-      <div className="flex flex-col gap-4 sm:grid sn:grid-cols-3 items-center mt-4">
+      <div className="flex flex-col gap-4 sm:grid sm:grid-cols-3 items-center mt-4">
         <span className="text-xs">
           {elapsedDisplay} / {durationDisplay}
         </span>

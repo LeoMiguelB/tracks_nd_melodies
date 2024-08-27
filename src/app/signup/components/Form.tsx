@@ -22,9 +22,11 @@ export default function Form() {
 
   const showNotifcation = () => {
     setAlertVisible(true);
+
+    // wait 8 seconds before closing alert
     setTimeout(() => {
       setAlertVisible(false);
-    }, 1000);
+    }, 8000);
   }
 
   useEffect(() => {

@@ -99,6 +99,7 @@ export default function AudioPlayer({
         }}
       />
 
+
       <div className="flex flex-col items-center justify-center">
         <div className="text-center mb-1">
           <p className="text-slate-300 font-bold">
@@ -107,7 +108,7 @@ export default function AudioPlayer({
           <p className="text-xs">{currentSong?.artist ?? 'No Artist'}</p>
         </div>
       </div>
-      <div className="grid grid-cols-3 items-center mt-4">
+      <div className="flex flex-col gap-4 sm:grid sn:grid-cols-3 items-center mt-4">
         <span className="text-xs">
           {elapsedDisplay} / {durationDisplay}
         </span>
@@ -144,7 +145,7 @@ export default function AudioPlayer({
           </IconButton>
         </div>
 
-        <div className="flex gap-3 items-center justify-self-end">
+        <div className="flex sm:gap-3 items-center justify-self-end">
           <IconButton
             intent="secondary"
             size="sm"

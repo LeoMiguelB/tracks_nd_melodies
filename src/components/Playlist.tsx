@@ -13,7 +13,7 @@ export default function Playlist({ songs }: PlaylistProps) {
   const { isPlaying, currentSongIndex, setCurrentSongIndex, togglePlayPause } = React.useContext(MusicContext)
 
   return (
-    <div className="w-full max-w-md mx-auto h-[450px] md:h-[500px] text-white overflow-x-auto">
+    <div className="w-full max-w-md mx-auto h-[380px] sm:h-[500px] text-white overflow-x-auto">
       <table className="w-full sm:w-full border-collapse">
         <thead>
           <tr className="text-sm font-medium">

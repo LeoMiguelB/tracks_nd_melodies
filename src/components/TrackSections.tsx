@@ -9,7 +9,7 @@ export default function TrackSections({ songs }: any) {
     <MusicProvider>
         {
         songs && (
-            <div className="lg:w-1/2 md:w-full w-full">
+            <div className="w-full sm:w-2/3">
                 <Playlist songs={songs} />
                 <AudioPlayer songs={songs} songCount={songs ? songs.length : 0} />
             </div>

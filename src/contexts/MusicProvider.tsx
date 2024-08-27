@@ -39,7 +39,7 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
   const [duration, setDuration] = useState<number>(0);
   const [currentProgress, setCurrentProgress] = useState<number>(0);
   const [buffered, setBuffered] = useState<number>(0);
-  const [volume, setVolume] = useState<number>(0.2);
+  const [volume, setVolume] = useState<number>(0.5);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentSongIndex, setCurrentSongIndex] = React.useState(-1);
 

@@ -1,53 +1,20 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useFormState } from 'react-dom';
 import { emailSignupAction } from '../actions';
-import { Alert, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import SubmissionAlert from '@/components/SubmissionAlert';
 
 export default function Form() {
   const [state, formAction] = useFormState(emailSignupAction, { errors: [] });
-
-  const [alertVisible, setAlertVisible] = useState(false)
-
   const nameErrors = findErrors("name", state?.errors);
   const emailErrors = findErrors("email", state?.errors);
   
   const formRef = useRef<HTMLFormElement | null>(null)
 
-  const resetForm = () => {
-    formRef?.current?.reset()
-  }
-
-  const showNotifcation = () => {
-    setAlertVisible(true);
-
-    // wait 8 seconds before closing alert
-    setTimeout(() => {
-      setAlertVisible(false);
-    }, 8000);
-  }
-
-  useEffect(() => {
-    if(state?.status == 'success') {
-      showNotifcation()
-      resetForm()
-    }
-  }, [state])
-
   return (
     <>
-      {
-        alertVisible && (
-          <div className="fixed bottom-4 left-4 z-50 max-w-sm transition-all duration-300 ease-in-out">
-            <Alert>
-              <Terminal className="h-4 w-4" />
-              <AlertTitle>Submission Success!</AlertTitle>
-            </Alert>
-          </div>
-        )
-      }
+      <SubmissionAlert formRef={formRef} formState={state} />
       <form ref={formRef} action={formAction} className="w-[80%] sm:w-full max-w-sm">
         <h1 className="font-bold py-8">Get Notified When There Is a New Upload.</h1>
         <div className="mb-4">

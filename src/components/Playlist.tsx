@@ -13,24 +13,24 @@ export default function Playlist({ songs }: PlaylistProps) {
   const { isPlaying, currentSongIndex, setCurrentSongIndex, togglePlayPause } = React.useContext(MusicContext)
 
   return (
-    <div className="w-full max-w-md mx-auto h-[380px] sm:h-[500px] text-white overflow-x-auto">
+    <div className="w-full max-w-md sm:max-w-[40rem] mx-auto h-[380px] sm:h-[500px] text-white overflow-x-auto">
       <table className="w-full sm:w-full border-collapse">
-        <thead>
-          <tr className="text-sm font-medium">
+        <thead className="">
+          <tr className="text-sm font-medium rounded-full">
             <th className="hidden sm:block py-2 px-4 text-left">No.</th>
             <th className="py-2 px-4 text-left">Title</th>
             <th className="py-2 px-4 text-left">Key</th>
-            <th className="py-2 px-4 text-right">BPM</th>
+            <th className="py-2 px-4 text-left">BPM</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-700">
+        <tbody className="divide-y divide-gray-700 ">
           {songs && songs.map((song, index) => (
-            <tr onClick={() => setCurrentSongIndex(index)} key={index} className="hover:bg-gray-800 transition-colors hover:cursor-pointer">
+            <tr onClick={() => setCurrentSongIndex(index)} key={index} className="hover:bg-gray-800 transition-colors hover:cursor-pointer sm:bg-white sm:bg-opacity-5">
               <td className="hidden sm:block pt-9 py-6 px-4 font-medium text-sm">{index + 1 < 10 ? '0' + (index + 1) : index + 1}</td>
               <td className="py-6 px-4 font-medium truncate">{song.title}</td>
-              <td className="py-6 px-4 text-sm">{song.key}</td>
-              <td className="py-6 px-4 text-sm text-gray-400 text-right">{song.bpm}</td>
-              <td className="py-6 px-2 text-center">
+              <td className="py-6 px-2 sm:px-4 text-sm">{song.key}</td>
+              <td className="py-6 px-4 text-sm text-gray-400 text-left">{song.bpm}</td>
+              <td className="py-6 px-2 sm:pl-12 text-center">
                 <button 
                   onClick={() => window.open(song.dl, '_blank')}
                   className="p-2 hover:bg-gray-700 rounded transition-colors"

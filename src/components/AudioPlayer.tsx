@@ -63,7 +63,7 @@ export default function AudioPlayer({
 
 
   return (
-    <div className="bg-[foreground] text-slate-400 p-4">
+    <div className="sm:bg-white sm:bg-opacity-[0.05] rounded-md text-slate-400 p-4">
       {currentSong && (
         <audio
           // must include key in order re-render audio elem
@@ -150,6 +150,7 @@ export default function AudioPlayer({
             intent="secondary"
             size="sm"
             onClick={handleMuteUnmute}
+            className="hidden sm:inline"
             aria-label={volume === 0 ? 'unmute' : 'mute'}
           >
             {volume === 0 ? (

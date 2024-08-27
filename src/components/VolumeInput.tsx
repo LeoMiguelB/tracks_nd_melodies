@@ -16,7 +16,8 @@ export default function VolumeInput({
       step={0.05}
       max={1}
       value={volume}
-      className="w-[70px] sm:w-[130px] m-0 h-2 rounded-full accent-[background] bg-gray-700 appearance-none cursor-pointer"
+      // mobile users don't really use in built volume controls rather they use the phones volume controls
+      className="hidden sm:inline w-[70px] sm:w-[130px] m-0 h-2 rounded-full accent-[background] bg-gray-700 appearance-none cursor-pointer"
       onChange={(e) => {
         onVolumeChange(e.currentTarget.valueAsNumber);
       }}

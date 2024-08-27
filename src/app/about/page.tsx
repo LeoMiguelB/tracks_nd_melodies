@@ -4,8 +4,8 @@
 
 export default async function Page()  {
   return (
-    <main className="flex flex-col items-center justify-between pt-10 h-[660px] sm:h-[760px]">
-      <div className="p-24">
+    <main className="flex flex-col items-center justify-between w-full pt-10 h-[660px] sm:h-[760px]">
+      <div className="p-8 sm:p-24">
         <p>This is a centralized place for all my melodies and things alike.</p>
         <br/>
         <p>Thank you for visiting!</p>

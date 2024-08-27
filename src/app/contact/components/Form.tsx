@@ -1,10 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import React from 'react';
 import { useFormState } from 'react-dom';
 import { emailSignupAction } from '../actions';
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import {
   BtnBold,
   BtnItalic,
@@ -15,53 +14,26 @@ import {
   EditorProvider,
   Toolbar
 } from 'react-simple-wysiwyg';
-import { Terminal } from 'lucide-react';
+import SubmissionAlert from '@/components/SubmissionAlert';
 
 
 export default function Form() {
   const [state, formAction] = useFormState(emailSignupAction, null);
   const [editorValue, setEditorValue] = useState("");
 
-  const [alertVisible, setAlertVisible] = useState(false)
-
   const nameErrors = findErrors("name", state?.errors);
   const emailErrors = findErrors("email", state?.errors);
   const titleErrors = findErrors("title", state?.errors);
   const descriptionErrors = findErrors("description", state?.errors);
+  
+  // SubmissionAlert comp only clears uncontrolled, the test editor is controlled hence to clear it hear manually
+  useEffect(() => {if(state?.status == 'success') setEditorValue("")}, [state])
 
   const formRef = useRef<HTMLFormElement | null>(null)
 
-  const resetForm = () => {
-    formRef?.current?.reset()
-    setEditorValue("")
-  }
-  
-  const showNotifcation = () => {
-    setAlertVisible(true);
-    setTimeout(() => {
-      setAlertVisible(false);
-    }, 1000);
-  }
-
-  useEffect(() => {
-    if(state?.status == 'success') {
-      showNotifcation()
-      resetForm()
-    }
-  }, [state])
-
   return (
     <>
-      {
-        alertVisible && (
-          <div className="fixed bottom-4 left-4 z-50 max-w-sm transition-all duration-300 ease-in-out">
-            <Alert>
-              <Terminal className="h-4 w-4" />
-              <AlertTitle>Submission Success!</AlertTitle>
-            </Alert>
-          </div>
-        )
-      }
+      <SubmissionAlert formRef={formRef} formState={state} />
       <form ref={formRef} action={formAction} className="w-[80%] sm:w-full max-w-sm flex gap-8 flex-col">
         <h1 className="font-bold py-4">Submit an issue or a feature request.</h1>
         <div>
@@ -144,7 +116,7 @@ export default function Form() {
         <div className="flex items-center justify-between">
           <button
             type="submit"
-            className="bg-transparent border-2 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-transparent border-2 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer"
           >
             Submit
           </button>

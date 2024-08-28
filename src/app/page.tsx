@@ -16,7 +16,7 @@ export default async function Home()  {
   const {data, error } = await get_cached_tracks()
 
   const songs = error ? null : data
-
+  
   return (
     <main className="flex flex-col items-center justify-between pt-10 w-full h-[660px] sm:h-[760px] sm:bg-white sm:bg-opacity-[0.05]">
       <TrackSections songs={songs} />

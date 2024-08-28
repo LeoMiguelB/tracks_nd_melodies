@@ -3,8 +3,13 @@
 import MusicProvider from "@/contexts/MusicProvider";
 import AudioPlayer from "./AudioPlayer";
 import Playlist from "./Playlist";
+import { Database } from "@/types/database.types";
 
-export default function TrackSections({ songs }: any) {
+interface TrackSectionsProps {
+  songs: Database["public"]["Tables"]["audio_tracks"]["Row"][]
+}
+
+export default function TrackSections({ songs }: TrackSectionsProps) {
   return (
     <MusicProvider>
         {

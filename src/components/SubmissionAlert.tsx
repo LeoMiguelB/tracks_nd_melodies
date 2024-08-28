@@ -1,7 +1,7 @@
 'use client'
 
 import { Terminal } from "lucide-react";
-import { RefObject, Dispatch, SetStateAction, useEffect, useState } from "react"
+import { RefObject, useEffect, useState } from "react"
 import { Alert, AlertTitle } from "./ui/alert";
 
 

@@ -10,7 +10,7 @@ const schema = z.object({
   description: z.string().min(1, "name cannot be empty."),
 })
 
-export async function emailSignupAction(prevState: any, formData: FormData) {
+export async function contactAction(prevState: any, formData: FormData) {
 
   const validation = schema.safeParse({
     email: formData.get("email"),
@@ -34,12 +34,13 @@ export async function emailSignupAction(prevState: any, formData: FormData) {
   if (validation.success) {
     // save the data, send an email, etc.
     return {
-      status: 'success'
+      status: 'success',
+      errors: null
     }
-  } else {
-    return {
-      errors: validation.error.issues,
-      status: 'error'
-    };
-  }
+  } 
+  
+  return {
+    status: 'error',
+    errors: validation.error.issues
+  };
 }

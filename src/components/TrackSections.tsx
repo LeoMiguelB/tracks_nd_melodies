@@ -10,8 +10,8 @@ export default function TrackSections({ songs }: any) {
         {
         songs && (
             <div className="w-full sm:w-2/3">
-                <Playlist songs={songs} />
-                <AudioPlayer songs={songs} songCount={songs ? songs.length : 0} />
+              <Playlist songs={songs} />
+              <AudioPlayer songs={songs} songCount={songs ? songs.length : 0} />
             </div>
           )
         }

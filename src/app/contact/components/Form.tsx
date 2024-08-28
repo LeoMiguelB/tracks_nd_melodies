@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import React from 'react';
 import { useFormState } from 'react-dom';
-import { emailSignupAction } from '../actions';
+import { contactAction } from '../actions';
 import {
   BtnBold,
   BtnItalic,
@@ -15,11 +15,14 @@ import {
   Toolbar
 } from 'react-simple-wysiwyg';
 import SubmissionAlert from '@/components/SubmissionAlert';
+import { ZodIssue } from 'zod';
+
 
 
 export default function Form() {
-  const [state, formAction] = useFormState(emailSignupAction, null);
-  const [editorValue, setEditorValue] = useState("");
+  const [state, formAction] = useFormState(contactAction, null);
+
+  const [editorValue, setEditorValue] = useState<string>("");
 
   const nameErrors = findErrors("name", state?.errors);
   const emailErrors = findErrors("email", state?.errors);
@@ -134,14 +137,14 @@ const ErrorMessages = ({ errors }: { errors: string[] }) => {
   return <div className="text-red-600 peer">{text}</div>;
 };
 
-const findErrors = (fieldName: string, errors: any) => {
+const findErrors = (fieldName: string, errors: ZodIssue[] | null | undefined) => {
   if (!errors) {
     return []
   }
 
   return errors
-    .filter((item) => {
+    .filter((item: any) => {
       return item.path.includes(fieldName);
     })
-    .map((item) => item.message);
+    .map((item: any) => item.message);
 };

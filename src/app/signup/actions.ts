@@ -1,6 +1,5 @@
 'use server'
 import { z } from 'zod'
-import { redirect } from 'next/navigation';
 import { supabase } from '../supabase';
 
 const schema = z.object({
@@ -29,12 +28,13 @@ export async function emailSignupAction(prevState: any, formData: FormData) {
   if (validation.success) {
     // save the data, send an email, etc.
     return {
-      status: 'success'
+      status: 'success',
+      errors: null,
     }
-  } else {
-    return {
-      errors: validation.error.issues,
-      status: 'error'
-    };
-  }
+  } 
+
+  return {
+    status: 'error',
+    errors: validation.error.issues,
+  };
 }

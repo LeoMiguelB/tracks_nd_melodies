@@ -4,9 +4,10 @@ import React, { useRef } from 'react';
 import { useFormState } from 'react-dom';
 import { emailSignupAction } from '../actions';
 import SubmissionAlert from '@/components/SubmissionAlert';
+import { ZodIssue } from 'zod';
 
 export default function Form() {
-  const [state, formAction] = useFormState(emailSignupAction, { errors: [] });
+  const [state, formAction] = useFormState(emailSignupAction, null);
   const nameErrors = findErrors("name", state?.errors);
   const emailErrors = findErrors("email", state?.errors);
   
@@ -75,7 +76,7 @@ const ErrorMessages = ({ errors }: { errors: string[] }) => {
   return <div className="text-red-600 peer">{text}</div>;
 };
 
-const findErrors = (fieldName: string, errors: any) => {
+const findErrors = (fieldName: string, errors: ZodIssue[] | null | undefined) => {
   if(!errors) {
     return []
   }

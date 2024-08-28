@@ -20,11 +20,11 @@ export async function contactAction(prevState: any, formData: FormData) {
   });
 
   const rawFormData = {
-    email: formData.get('email'),
-    request_type: formData.get('request-type'),
-    name: formData.get('name'),
-    description: formData.get('description'),
-    title: formData.get('title'),
+    email: String(formData.get('email')),
+    request_type: String(formData.get('request-type')),
+    name: String(formData.get('name')),
+    description: String(formData.get('description')),
+    title: String(formData.get('title')),
   }
 
   const { error } = await supabase

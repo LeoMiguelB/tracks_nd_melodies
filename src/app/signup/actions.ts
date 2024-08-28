@@ -15,9 +15,9 @@ export async function emailSignupAction(prevState: any, formData: FormData) {
   });
 
   const rawFormData = {
-    email: formData.get('email'),
-    name: formData.get('name'),
-    beatstars_username: formData.get('beatstars'),
+    email: String(formData.get('email')),
+    name: String(formData.get('name')),
+    beatstars_username: String(formData.get('beatstars')),
   }
 
   // TODO: best to perform raw queries instead, more control over sanitization

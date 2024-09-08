@@ -190,7 +190,7 @@ export default function AudioPlayer({
                 handlePlaybackRateChange(e.currentTarget.valueAsNumber);
               }}
             />
-            <span className='w-16 hidden sm:inline'>
+            <span className='w-24 hidden sm:inline'>
               {currentSong && Math.floor(playbackRate * currentSong!.bpm!)} BPM
             </span>
           </div>

@@ -12,15 +12,19 @@ interface MusicContextType {
   setCurrentProgress: Dispatch<SetStateAction<number>>;
   buffered: number;
   setBuffered: Dispatch<SetStateAction<number>>;
-  volume: number;
-  setVolume: Dispatch<SetStateAction<number>>;
   isPlaying: boolean;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   togglePlayPause: () => void;
+  volume: number;
+  setVolume: Dispatch<SetStateAction<number>>;
   handleMuteUnmute: () => void;
   handleVolumeChange: (volumeValue: number) => void;
   currentSongIndex: number;
-  setCurrentSongIndex: Dispatch<SetStateAction<number>>
+  setCurrentSongIndex: Dispatch<SetStateAction<number>>;
+  changeSongIndex: (callback: any) => void;
+  playbackRate: number;
+  setPlaybackRate: Dispatch<SetStateAction<number>>;
+  handlePlaybackRateChange: (volumeValue: number) => void;
 }
 
 // Create context with a default value
@@ -31,8 +35,10 @@ interface MusicProviderProps {
 }
 
 
+const PLAYBACK_DEFAULT = 1.0
 
 export default function MusicProvider({ children }: MusicProviderProps): ReactElement {
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [isReady, setIsReady] = useState<boolean>(false);
@@ -42,6 +48,7 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
   const [volume, setVolume] = useState<number>(0.5);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentSongIndex, setCurrentSongIndex] = React.useState(-1);
+  const [playbackRate, setPlaybackRate] = React.useState(PLAYBACK_DEFAULT);
 
   // saves volume state before mute
   const [localVolume, setLocalVolume] = useState(0.0)
@@ -57,6 +64,11 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
       setIsPlaying(!isPlaying);
     }
   };
+
+  const changeSongIndex = (callback: any) => {
+    setCurrentSongIndex(callback);
+    setPlaybackRate(PLAYBACK_DEFAULT);
+  }
   
 
   const handleMuteUnmute = (): void => {
@@ -79,6 +91,13 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
     }
   };
 
+  const handlePlaybackRateChange = (playbackRate: number): void => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+      setPlaybackRate(playbackRate);
+    }
+  };
+
   const contextValue: MusicContextType = {
     audioRef,
     isReady,
@@ -98,6 +117,10 @@ export default function MusicProvider({ children }: MusicProviderProps): ReactEl
     handleVolumeChange,
     currentSongIndex,
     setCurrentSongIndex,
+    playbackRate,
+    setPlaybackRate,
+    handlePlaybackRateChange,
+    changeSongIndex
   };
 
   return (

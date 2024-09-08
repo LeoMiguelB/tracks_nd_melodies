@@ -10,7 +10,7 @@ interface PlaylistProps {
 }
 
 export default function Playlist({ songs }: PlaylistProps) {
-  const { isPlaying, currentSongIndex, setCurrentSongIndex, togglePlayPause } = React.useContext(MusicContext)
+  const { isPlaying, currentSongIndex, changeSongIndex, togglePlayPause } = React.useContext(MusicContext)
 
   return (
     <div className="w-full max-w-md sm:max-w-[40rem] mx-auto h-[380px] sm:h-[500px] text-white overflow-x-auto">
@@ -25,7 +25,7 @@ export default function Playlist({ songs }: PlaylistProps) {
         </thead>
         <tbody className="divide-y divide-gray-700 ">
           {songs && songs.map((song, index) => (
-            <tr onClick={() => setCurrentSongIndex(index)} key={index} className="hover:bg-gray-800 transition-colors hover:cursor-pointer sm:bg-white sm:bg-opacity-5">
+            <tr onClick={() => changeSongIndex(index)} key={index} className="hover:bg-gray-800 transition-colors hover:cursor-pointer sm:bg-white sm:bg-opacity-5">
               <td className="hidden sm:block pt-9 py-6 px-4 font-medium text-sm">{index + 1 < 10 ? '0' + (index + 1) : index + 1}</td>
               <td className="py-6 px-4 font-medium truncate">{song.title}</td>
               <td className="py-6 px-2 sm:px-4 text-sm">{song.key}</td>

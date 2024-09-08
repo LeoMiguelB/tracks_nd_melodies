@@ -13,7 +13,7 @@ export default function VolumeInput({
       name="volume"
       type="range"
       min={0}
-      step={0.05}
+      step={0.01}
       max={1}
       value={volume}
       // mobile users don't really use in built volume controls rather they use the phones volume controls

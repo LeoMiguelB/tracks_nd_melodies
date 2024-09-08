@@ -18,7 +18,7 @@ export default async function Home()  {
   return (
     error ?
     (
-      <div>something went wrong</div>
+      <div className="text-center p-[100px] h-[700px]">something went wrong...</div>
     )
     :
     (

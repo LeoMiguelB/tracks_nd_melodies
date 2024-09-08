@@ -9,11 +9,13 @@ import {
   MdVolumeUp,
   MdVolumeOff,
 } from 'react-icons/md';
+import { GiRabbit } from "react-icons/gi";
 import { CgSpinner } from 'react-icons/cg';
 import IconButton from './IconButton';
 import AudioProgressBar from './AudioProgressBar';
 import VolumeInput from './VolumeInput';
 import { MusicContext } from '@/contexts/MusicProvider';
+import { Database } from '@/types/database.types';
 
 function formatDurationDisplay(duration: number) {
   const min = Math.floor(duration / 60);
@@ -26,7 +28,7 @@ function formatDurationDisplay(duration: number) {
 
 interface AudioPlayerProps {
   songCount: number;
-  songs: Array<any>;
+  songs: Database["public"]["Tables"]["audio_tracks"]["Row"][];
 }
 
 export default function AudioPlayer({
@@ -34,7 +36,7 @@ export default function AudioPlayer({
   songCount,
 }: AudioPlayerProps) {
 
-  const { audioRef, isReady, duration, setDuration, setIsPlaying, setIsReady, currentProgress, setCurrentProgress, setVolume, volume, isPlaying, togglePlayPause, handleMuteUnmute, handleVolumeChange, setCurrentSongIndex, currentSongIndex, } = React.useContext(MusicContext)
+  const { audioRef, isReady, duration, setDuration, setIsPlaying, setIsReady, currentProgress, setCurrentProgress, setVolume, volume, isPlaying, togglePlayPause, handleMuteUnmute, handleVolumeChange, setCurrentSongIndex, currentSongIndex, playbackRate, handlePlaybackRateChange, changeSongIndex } = React.useContext(MusicContext)
 
   const currentSong = songs ? songs[currentSongIndex] : null
 
@@ -54,11 +56,11 @@ export default function AudioPlayer({
   }, [currentSongIndex]);
 
   const handleNext = () => {
-    setCurrentSongIndex((i) => i + 1);
+    changeSongIndex((i: number) => i + 1);
   };
 
   const handlePrev = () => {
-    setCurrentSongIndex((i) => i - 1);
+    changeSongIndex((i: number) => i - 1);
   };
 
 
@@ -144,22 +146,54 @@ export default function AudioPlayer({
             <MdSkipNext size={24} />
           </IconButton>
         </div>
+        
+        <div className="flex flex-col justify-self-end gap-6 pr-4">
+          <div className="flex sm:gap-2 items-center">
+            <IconButton
+              intent="secondary"
+              size="sm"
+              onClick={handleMuteUnmute}
+              className="hidden sm:inline"
+              aria-label={volume === 0 ? 'unmute' : 'mute'}
+            >
+              {volume === 0 ? (
+                <MdVolumeOff size={20} />
+              ) : (
+                <MdVolumeUp size={20} />
+              )}
+            </IconButton>
+            <VolumeInput volume={volume} onVolumeChange={handleVolumeChange} />
+            <span className='w-6 hidden sm:inline'>
+              {Math.floor(volume*100)}%
+            </span>
+          </div>
 
-        <div className="flex sm:gap-3 items-center justify-self-end">
-          <IconButton
-            intent="secondary"
-            size="sm"
-            onClick={handleMuteUnmute}
-            className="hidden sm:inline"
-            aria-label={volume === 0 ? 'unmute' : 'mute'}
-          >
-            {volume === 0 ? (
-              <MdVolumeOff size={20} />
-            ) : (
-              <MdVolumeUp size={20} />
-            )}
-          </IconButton>
-          <VolumeInput volume={volume} onVolumeChange={handleVolumeChange} />
+          <div className="flex sm:gap-2 items-center">
+            <IconButton
+              intent="secondary"
+              size="sm"
+              className="hidden sm:inline"
+            >
+              <GiRabbit size={20}/>
+            </IconButton>
+            <input
+              aria-label="volume"
+              name="volume"
+              type="range"
+              min={0.6}
+              step={0.01}
+              max={1.5}
+              value={playbackRate}
+              // mobile users don't really use in built volume controls rather they use the phones volume controls
+              className="hidden sm:inline w-[70px] sm:w-[90px] m-0 h-2 rounded-full accent-[background] bg-gray-700 appearance-none cursor-pointer"
+              onChange={(e) => {
+                handlePlaybackRateChange(e.currentTarget.valueAsNumber);
+              }}
+            />
+            <span className='w-16 hidden sm:inline'>
+              {currentSong && Math.floor(playbackRate * currentSong!.bpm!)} BPM
+            </span>
+          </div>
         </div>
       </div>
     </div>

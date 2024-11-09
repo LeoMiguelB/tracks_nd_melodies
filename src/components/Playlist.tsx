@@ -10,7 +10,7 @@ interface PlaylistProps {
 }
 
 function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration }:
-  {url: string, isPlaying: boolean, isCurrentSong: boolean, progress: number, duration: number}
+  {url: string, isPlaying: boolean, isCurrentSong: boolean, progress: number, duration: number }
 ) {
   const waveformRef = React.useRef<HTMLDivElement>(null);
   const wavesurfer = React.useRef<WaveSurfer | null>(null);
@@ -21,7 +21,10 @@ function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration
     let mounted = true;
 
     const initializeWaveform = async () => {
-      if (!waveformRef.current || wavesurfer.current) return;
+      if (!waveformRef.current) return;
+
+      const audioElem = new Audio(url);
+      audioElem.crossOrigin = 'anonymous';
 
       try {
         // Create placeholder waveform while loading
@@ -35,6 +38,7 @@ function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration
           height: 32,
           normalize: true,
           interact: false,
+          media: audioElem,
           // Add loading indicator
           backend: 'WebAudio',
           renderFunction: (channels, ctx) => {
@@ -73,7 +77,6 @@ function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration
           }
         });
 
-        await ws.load(url);
       } catch (error) {
         console.error('Waveform loading error:', error);
         if (mounted) {
@@ -133,6 +136,7 @@ function formatTime(time: number) {
 
 export default function Playlist({ songs }: PlaylistProps) {
   const { 
+    audioRef,
     isPlaying, 
     currentSongIndex, 
     changeSongIndex, 
@@ -160,9 +164,11 @@ export default function Playlist({ songs }: PlaylistProps) {
               <div className="flex-none">
                 <div className="w-12 h-12 bg-zinc-800 rounded-lg overflow-hidden">
                   <Image 
-                    src="sample_pic.jfif" 
+                    src="/sample_pic.jfif" 
                     alt="Track artwork" 
                     className="w-full h-full object-cover"
+                    width={100}
+                    height={100}
                   />
                 </div>
               </div>

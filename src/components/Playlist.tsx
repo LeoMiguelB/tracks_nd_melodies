@@ -164,7 +164,7 @@ export default function Playlist({ songs }: PlaylistProps) {
               <div className="flex-none">
                 <div className="w-12 h-12 bg-zinc-800 rounded-lg overflow-hidden">
                   <Image 
-                    src="/sample_pic.jfif" 
+                    src="/public/sample_pic.jfif" 
                     alt="Track artwork" 
                     className="w-full h-full object-cover"
                     width={100}

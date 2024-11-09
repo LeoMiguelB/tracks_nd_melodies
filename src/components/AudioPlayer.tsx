@@ -9,7 +9,6 @@ import {
 } from 'react-icons/md';
 import { GiRabbit } from "react-icons/gi";
 import { CgSpinner } from 'react-icons/cg';
-import { MdMoreHoriz, MdRepeat, MdShuffle } from 'react-icons/md';
 import IconButton from './IconButton';
 import { MusicContext } from '@/contexts/MusicProvider';
 import { Database } from '@/types/database.types';

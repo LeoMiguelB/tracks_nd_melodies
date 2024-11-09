@@ -72,7 +72,7 @@ function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration
           }
         });
 
-        await ws.load("full_audio.wav");
+        await ws.load(url);
       } catch (error) {
         console.error('Waveform loading error:', error);
         if (mounted) {

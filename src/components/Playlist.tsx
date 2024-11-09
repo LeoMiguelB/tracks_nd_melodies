@@ -3,6 +3,7 @@ import * as React from 'react'
 import { MusicContext } from '@/contexts/MusicProvider';
 import { Play, Pause, Download } from 'lucide-react';
 import WaveSurfer from 'wavesurfer.js';
+import Image from 'next/image';
 
 interface PlaylistProps {
     songs: Array<any>
@@ -91,7 +92,7 @@ function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration
         wavesurfer.current = null;
       }
     };
-  }, [url]);
+  }, [url, isLoaded]);
 
   React.useEffect(() => {
     if (wavesurfer.current && isLoaded && !loadError) {
@@ -158,7 +159,7 @@ export default function Playlist({ songs }: PlaylistProps) {
             >
               <div className="flex-none">
                 <div className="w-12 h-12 bg-zinc-800 rounded-lg overflow-hidden">
-                  <img 
+                  <Image 
                     src="sample_pic.jfif" 
                     alt="Track artwork" 
                     className="w-full h-full object-cover"

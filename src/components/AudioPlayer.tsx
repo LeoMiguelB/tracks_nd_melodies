@@ -12,6 +12,7 @@ import { CgSpinner } from 'react-icons/cg';
 import IconButton from './IconButton';
 import { MusicContext } from '@/contexts/MusicProvider';
 import { Database } from '@/types/database.types';
+import Image from 'next/image';
 
 function formatDurationDisplay(duration: number) {
   const min = Math.floor(duration / 60);
@@ -45,7 +46,7 @@ export default function AudioPlayer({
       audioRef.current?.play();
     }, 500);
     return () => clearTimeout(timeout);
-  }, [currentSongIndex]);
+  }, [currentSongIndex, audioRef]);
 
   const handleNext = () => changeSongIndex((i: number) => i + 1);
   const handlePrev = () => changeSongIndex((i: number) => i - 1);
@@ -106,13 +107,13 @@ export default function AudioPlayer({
         <div className="flex items-center justify-between gap-4">
           {/* Left section - Song Info */}
           <div className="flex items-center gap-4 w-[30%] min-w-[180px]">
-            {currentSong?.coverUrl && (
-              <img 
+            {/* {currentSong?.coverUrl && (
+              <Image 
                 src={currentSong.coverUrl} 
                 alt={currentSong.title}
                 className="h-14 w-14 rounded"
               />
-            )}
+            )} */}
             <div className="flex flex-col">
               <p className="text-sm font-medium truncate hover:underline cursor-pointer">
                 {currentSong?.title ?? 'Select a song'}
@@ -190,7 +191,7 @@ export default function AudioPlayer({
                   max="1"
                   step="0.01"
                   value={volume}
-                  onChange={handleVolumeChange}
+                  onChange={(e) => handleVolumeChange(e.currentTarget.valueAsNumber)}
                   className="absolute w-full h-1 opacity-0 cursor-pointer"
                   style={{ margin: 0 }}
                 />

@@ -1,92 +1,239 @@
 'use client'
-
 import * as React from 'react'
 import { MusicContext } from '@/contexts/MusicProvider';
-import { MdPause, MdPlayArrow } from "react-icons/md";
-import { IoMdDownload } from "react-icons/io";
+import { Play, Pause, Download } from 'lucide-react';
+import WaveSurfer from 'wavesurfer.js';
 
 interface PlaylistProps {
     songs: Array<any>
 }
 
-export default function Playlist({ songs }: PlaylistProps) {
-  const { isPlaying, currentSongIndex, changeSongIndex, togglePlayPause } = React.useContext(MusicContext)
+function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration }:
+  {url: string, isPlaying: boolean, isCurrentSong: boolean, progress: number, duration: number}
+) {
+  const waveformRef = React.useRef<HTMLDivElement>(null);
+  const wavesurfer = React.useRef<WaveSurfer | null>(null);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [loadError, setLoadError] = React.useState(false);
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    const initializeWaveform = async () => {
+      if (!waveformRef.current || wavesurfer.current) return;
+
+      try {
+        // Create placeholder waveform while loading
+        const ws = WaveSurfer.create({
+          container: waveformRef.current,
+          waveColor: '#4a5568',
+          progressColor: '#9f7aea',
+          cursorColor: 'transparent',
+          barWidth: 2,
+          barGap: 1,
+          height: 32,
+          normalize: true,
+          interact: false,
+          // Add loading indicator
+          backend: 'WebAudio',
+          renderFunction: (channels, ctx) => {
+            if (!isLoaded) {
+              // Draw loading placeholder
+              const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+              gradient.addColorStop(0, '#4a5568');
+              gradient.addColorStop(1, '#2d3748');
+              ctx.fillStyle = gradient;
+              
+              // Create a simple placeholder visualization
+              const height = ctx.canvas.height;
+              for (let i = 0; i < ctx.canvas.width; i += 3) {
+                const h = Math.random() * (height / 2);
+                ctx.fillRect(i, height/2 - h/2, 2, h);
+              }
+            }
+          }
+        });
+
+        wavesurfer.current = ws;
+
+        // Handle successful load
+        ws.on('ready', () => {
+          if (mounted) {
+            setIsLoaded(true);
+            setLoadError(false);
+          }
+        });
+
+        // Handle load errors
+        ws.on('error', () => {
+          if (mounted) {
+            setLoadError(true);
+            setIsLoaded(false);
+          }
+        });
+
+        await ws.load("full_audio.wav");
+      } catch (error) {
+        console.error('Waveform loading error:', error);
+        if (mounted) {
+          setLoadError(true);
+          setIsLoaded(false);
+        }
+      }
+    };
+
+    initializeWaveform();
+
+    return () => {
+      mounted = false;
+      if (wavesurfer.current) {
+        wavesurfer.current.destroy();
+        wavesurfer.current = null;
+      }
+    };
+  }, [url]);
+
+  React.useEffect(() => {
+    if (wavesurfer.current && isLoaded && !loadError) {
+      wavesurfer.current.setTime(progress);
+    }
+  }, [progress, isLoaded, loadError]);
+
+  if (loadError) {
+    return (
+      <div className="h-8 w-full bg-zinc-800/50 rounded flex items-center justify-center">
+        <span className="text-xs text-gray-400">Waveform unavailable</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full max-w-md sm:max-w-[40rem] mx-auto h-[380px] sm:h-[500px] text-white overflow-x-auto">
-      <table className="w-full sm:w-full border-collapse">
-        <thead className="">
-          <tr className="text-sm font-medium rounded-full">
-            <th className="hidden sm:block py-2 px-4 text-left">No.</th>
-            <th className="py-2 px-4 text-left">Title</th>
-            <th className="py-2 px-4 text-left">Key</th>
-            <th className="py-2 px-4 text-left">BPM</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-700 ">
-          {songs && songs.map((song, index) => (
-            <tr onClick={() => changeSongIndex(index)} key={index} className="hover:bg-gray-800 transition-colors hover:cursor-pointer sm:bg-white sm:bg-opacity-5">
-              <td className="hidden sm:block pt-9 py-6 px-4 font-medium text-sm">{index + 1 < 10 ? '0' + (index + 1) : index + 1}</td>
-              <td className="py-6 px-4 font-medium truncate">{song.title}</td>
-              <td className="py-6 px-2 sm:px-4 text-sm">{song.key}</td>
-              <td className="py-6 px-4 text-sm text-gray-400 text-left">{song.bpm}</td>
-              <td className="py-6 px-2 sm:pl-12 text-center">
-                <button 
-                  onClick={() => window.open(song.dl, '_blank')}
-                  className="p-2 hover:bg-gray-700 rounded transition-colors"
+    <div className="relative flex items-center gap-2">
+      <div 
+        ref={waveformRef} 
+        className={`flex-1 transition-opacity duration-200 ${
+          isCurrentSong ? 'opacity-100' : 'opacity-40 group-hover:opacity-60'
+        }`}
+      />
+      {isCurrentSong && (
+        <span className="flex-none text-xs text-gray-400 ml-2">
+          {formatTime(progress)}/{formatTime(duration)}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function formatTime(time: number) {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+export default function Playlist({ songs }: PlaylistProps) {
+  const { 
+    isPlaying, 
+    currentSongIndex, 
+    changeSongIndex, 
+    togglePlayPause,
+    currentProgress,
+    duration 
+  } = React.useContext(MusicContext);
+
+  return (
+    <div className="w-full max-w-7xl mx-auto">
+      <div className="space-y-2">
+        {songs && songs.map((song, index) => {
+          const isCurrentSong = index === currentSongIndex;
+          const isCurrentlyPlaying = isCurrentSong && isPlaying;
+          
+          return (
+            <div 
+              key={index}
+              onClick={() => changeSongIndex(index)}
+              className={`
+                group relative flex items-center gap-4 p-3 rounded-lg
+                transition-colors duration-150 cursor-pointer
+              `}
+            >
+              <div className="flex-none">
+                <div className="w-12 h-12 bg-zinc-800 rounded-lg overflow-hidden">
+                  <img 
+                    src="sample_pic.jfif" 
+                    alt="Track artwork" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if(currentSongIndex === index) {
+                    togglePlayPause();
+                    return;
+                  }
+                  changeSongIndex(index);
+                }}
+                className="flex-none p-2 rounded-full hover:bg-white/10 transition-colors"
+                aria-label={isCurrentlyPlaying ? "Pause song" : "Play song"}
+              >
+                {isCurrentlyPlaying ? (
+                  <Pause className="w-5 h-5 text-white" />
+                ) : (
+                  <Play className="w-5 h-5 text-white" />
+                )}
+              </button>
+
+              <div className="flex flex-col mb-1">
+                <span className="font-medium text-white truncate">
+                  {song.title}
+                </span>
+                <span className="text-sm text-gray-400 truncate">
+                  {song.artist || 'Unknown Artist'}
+                </span>
+              </div>
+              <div className='flex-1'>
+                <WaveformDisplay 
+                  url={song.src} 
+                  isPlaying={isCurrentlyPlaying}
+                  isCurrentSong={isCurrentSong}
+                  progress={isCurrentSong ? currentProgress : 0}
+                  duration={duration}
+                />
+              </div>
+
+              <div className="flex-none flex items-center gap-2">
+                {song.bpm && (
+                  <span className="px-2 py-1 text-xs font-medium bg-zinc-800 rounded text-gray-300">
+                    {song.bpm} BPM
+                  </span>
+                )}
+                {song.midi && (
+                  <span className="px-2 py-1 text-xs font-medium bg-zinc-800 rounded text-gray-300">
+                    MIDI
+                  </span>
+                )}
+                {song.key && (
+                  <span className="px-2 py-1 text-xs font-medium bg-zinc-800 rounded text-gray-300">
+                    {song.key}
+                  </span>
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(song.dl, '_blank');
+                  }}
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
                   aria-label="Download song"
                 >
-                  <IoMdDownload size={24}/>
+                  <Download className="w-5 h-5 text-white" />
                 </button>
-              </td>
-              <td className="py-3 px-2 text-center">
-                <button 
-                  onClick={() => togglePlayPause()}
-                  className="p-2 hover:bg-gray-700 rounded transition-colors"
-                  aria-label={index === currentSongIndex && isPlaying ? "Pause song" : "Play song"}
-                >
-                  {index === currentSongIndex && isPlaying ? (
-                    <MdPause size={30} />
-                  ) : (
-                    <MdPlayArrow size={30} />
-                  )}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </div>
+            </div>
+          );
+        })}
       </div>
-
-    // <ul className="pb-20 pt-8 h-[600px] border-white border-opacity-30  border-2 p-4">
-    //   {songs && songs.map((song, index) => (
-    //     <li key={song.title} className="mb-1">
-    //       <button
-    //         onClick={() => setCurrentSongIndex(index)}
-    //         className={`flex items-center p-4 px-3 gap-16  w-full space-evenly rounded ${currentSongIndex === index
-    //           ? 'bg-gray-700 text-white'
-    //           : ' hover:bg-gray-900 hover:text-white'
-    //           }`}
-    //       >
-    //         <span className="text-sm">
-    //           {index + 1 < 10 ? '0' + (index + 1) : index + 1}
-    //         </span>
-    //         <h2 className="flex-1">{song.title}</h2>
-    //         <h2 className="">152BPM</h2>
-    //         <h2 className="">F Major</h2>
-    //         <span className="flex gap-4 items-center justify-center">
-    //           <a href={song.dl}>
-    //             <IoMdDownload size={24}/>
-    //           </a>
-    //           {index === currentSongIndex && isPlaying ? (
-    //             <MdPause size={30} onClick={togglePlayPause} />
-    //           ) : (
-    //             <MdPlayArrow size={30} onClick={togglePlayPause} />
-    //           )}
-    //         </span>
-    //       </button>
-    //     </li>
-    //   ))}
-    // </ul>
-  )
+    </div>
+  );
 }

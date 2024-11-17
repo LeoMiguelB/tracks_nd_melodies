@@ -115,7 +115,7 @@ export default function WaveformDisplay({ url, isPlaying, isCurrentSong }:
         }`}
       />
       {isCurrentSong && (
-        <span className="flex-none text-xs text-gray-400 ml-2">
+        <span className="flex-none text-xs w-12 text-gray-400 ml-2">
           {formatTime(currentProgress)}/{formatTime(duration)}
         </span>
       )}

@@ -2,136 +2,12 @@
 import * as React from 'react'
 import { MusicContext } from '@/contexts/MusicProvider';
 import { Play, Pause, Download } from 'lucide-react';
-import WaveSurfer from 'wavesurfer.js';
 import Image from 'next/image';
+import WaveformDisplay from './waveform';
+import { Database } from '@/types/database.types';
 
 interface PlaylistProps {
-    songs: Array<any>
-}
-
-function WaveformDisplay({ url, isPlaying, isCurrentSong, progress = 0, duration }:
-  {url: string, isPlaying: boolean, isCurrentSong: boolean, progress: number, duration: number }
-) {
-  const waveformRef = React.useRef<HTMLDivElement>(null);
-  const wavesurfer = React.useRef<WaveSurfer | null>(null);
-  const [isLoaded, setIsLoaded] = React.useState(false);
-  const [loadError, setLoadError] = React.useState(false);
-
-  React.useEffect(() => {
-    let mounted = true;
-
-    const initializeWaveform = async () => {
-      if (!waveformRef.current) return;
-
-      const audioElem = new Audio(url);
-      audioElem.crossOrigin = 'anonymous';
-
-      try {
-        // Create placeholder waveform while loading
-        const ws = WaveSurfer.create({
-          container: waveformRef.current,
-          waveColor: '#4a5568',
-          progressColor: '#9f7aea',
-          cursorColor: 'transparent',
-          barWidth: 2,
-          barGap: 1,
-          height: 32,
-          normalize: true,
-          interact: false,
-          media: audioElem,
-          // Add loading indicator
-          backend: 'WebAudio',
-          renderFunction: (channels, ctx) => {
-            if (!isLoaded) {
-              // Draw loading placeholder
-              const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
-              gradient.addColorStop(0, '#4a5568');
-              gradient.addColorStop(1, '#2d3748');
-              ctx.fillStyle = gradient;
-              
-              // Create a simple placeholder visualization
-              const height = ctx.canvas.height;
-              for (let i = 0; i < ctx.canvas.width; i += 3) {
-                const h = Math.random() * (height / 2);
-                ctx.fillRect(i, height/2 - h/2, 2, h);
-              }
-            }
-          }
-        });
-
-        wavesurfer.current = ws;
-
-        // Handle successful load
-        ws.on('ready', () => {
-          if (mounted) {
-            setIsLoaded(true);
-            setLoadError(false);
-          }
-        });
-
-        // Handle load errors
-        ws.on('error', () => {
-          if (mounted) {
-            setLoadError(true);
-            setIsLoaded(false);
-          }
-        });
-
-      } catch (error) {
-        console.error('Waveform loading error:', error);
-        if (mounted) {
-          setLoadError(true);
-          setIsLoaded(false);
-        }
-      }
-    };
-
-    initializeWaveform();
-
-    return () => {
-      mounted = false;
-      if (wavesurfer.current) {
-        wavesurfer.current.destroy();
-        wavesurfer.current = null;
-      }
-    };
-  }, [url, isLoaded]);
-
-  React.useEffect(() => {
-    if (wavesurfer.current && isLoaded && !loadError) {
-      wavesurfer.current.setTime(progress);
-    }
-  }, [progress, isLoaded, loadError]);
-
-  if (loadError) {
-    return (
-      <div className="h-8 w-full bg-zinc-800/50 rounded flex items-center justify-center">
-        <span className="text-xs text-gray-400">Waveform unavailable</span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative flex items-center gap-2">
-      <div 
-        ref={waveformRef} 
-        className={`flex-1 transition-opacity duration-200 ${
-          isCurrentSong ? 'opacity-100' : 'opacity-40 group-hover:opacity-60'
-        }`}
-      />
-      {isCurrentSong && (
-        <span className="flex-none text-xs text-gray-400 ml-2">
-          {formatTime(progress)}/{formatTime(duration)}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function formatTime(time: number) {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    songs: Array<Database["public"]["Tables"]["audio_tracks"]["Row"]>
 }
 
 export default function Playlist({ songs }: PlaylistProps) {
@@ -164,7 +40,8 @@ export default function Playlist({ songs }: PlaylistProps) {
               <div className="flex-none">
                 <div className="w-12 h-12 bg-zinc-800 rounded-lg overflow-hidden">
                   <Image 
-                    src="/public/sample_pic.jfif" 
+                    unoptimized
+                    src="/sample_pic.jfif" 
                     alt="Track artwork" 
                     className="w-full h-full object-cover"
                     width={100}
@@ -205,8 +82,7 @@ export default function Playlist({ songs }: PlaylistProps) {
                   url={song.src} 
                   isPlaying={isCurrentlyPlaying}
                   isCurrentSong={isCurrentSong}
-                  progress={isCurrentSong ? currentProgress : 0}
-                  duration={duration}
+                  // TODO: https://github.com/users/LeoMiguelB/projects/1?pane=issue&itemId=78171534 must do som preprocessing in the insertion date to get this right
                 />
               </div>
 
@@ -216,7 +92,8 @@ export default function Playlist({ songs }: PlaylistProps) {
                     {song.bpm} BPM
                   </span>
                 )}
-                {song.midi && (
+                {/* TODO https://github.com/users/LeoMiguelB/projects/1/views/1?pane=issue&itemId=87525829, disable for now */}
+                {false && (
                   <span className="px-2 py-1 text-xs font-medium bg-zinc-800 rounded text-gray-300">
                     MIDI
                   </span>
@@ -229,7 +106,7 @@ export default function Playlist({ songs }: PlaylistProps) {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.open(song.dl, '_blank');
+                    window.open(song.dl!, '_blank');
                   }}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors"
                   aria-label="Download song"
